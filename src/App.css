@@ -1,60 +1,7 @@
-.title {
-  color: green;
-  border: 3px dashed green;
-  background-color: #fff;
-  border-radius: 5px;
-  height: 80px;
-  text-align: center;
-  line-height: 80px;
-  font-size: 35pt;
-  font-weight: 600px;
-  font-family: 'Luminari';
-  margin-bottom: 50px;
-  width: 1000px;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.selectedTab {
-  background-color: #fff;
-  font-weight: 700;
-  box-shadow: 3px 3px rgb(165, 171, 177);
-}
-
-.unselectedTab {
-  background-color: #A1a2a2;
-  font-weight: 700;
-  box-shadow: 3px 3px rgb(144, 147, 150);
-}
-
-.content {
-  width: 1300px;
+.logo {
   display: block;
   margin-left: auto;
   margin-right: auto;
-}
-
-.navTab {
-  width: 20%;
-  margin-left: 20px;
-  margin-right: 20px;
-  border-top-left-radius: 5px;
-  border-top-right-radius: 5px;
-  margin-left: 0;
-}
-
-.navBar {
-  width: 900px;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.page {
-  border-radius: 5px;
-}
-
-.MuiTabs-indicator {
-  background-color: #fff;
 }
 
 .dataEntry {

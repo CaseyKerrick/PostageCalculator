@@ -1,0 +1,136 @@
+.title {
+  color: green;
+  border: 3px dashed green;
+  background-color: #fff;
+  border-radius: 5px;
+  height: 80px;
+  text-align: center;
+  line-height: 80px;
+  font-size: 35pt;
+  font-weight: 600px;
+  font-family: 'Luminari';
+  margin-bottom: 50px;
+  width: 1000px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.selectedTab {
+  background-color: #fff;
+  font-weight: 700;
+  box-shadow: 3px 3px rgb(165, 171, 177);
+}
+
+.unselectedTab {
+  background-color: #A1a2a2;
+  font-weight: 700;
+  box-shadow: 3px 3px rgb(144, 147, 150);
+}
+
+.content {
+  width: 1300px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.navTab {
+  width: 20%;
+  margin-left: 20px;
+  margin-right: 20px;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  margin-left: 0;
+}
+
+.navBar {
+  width: 900px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.page {
+  border-radius: 5px;
+}
+
+.MuiTabs-indicator {
+  background-color: #fff;
+}
+
+.dataEntry {
+  padding: 20px;
+  height: 90px;
+}
+
+.totalCostCents {
+  margin-right: 10px;
+  width: 150px;
+}
+
+.stampValues {
+  width: 530px;
+}
+
+.maxStamps {
+  width: 150px;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+.generateSolution {
+  margin-top: 10px;
+  float: right;
+  background-color: green;
+  &:hover {
+    background-color: rgb(17, 155, 17);
+  }
+}
+
+.divider {
+  background-color: green;
+  width: 98%;
+  height: 2px;
+  border-radius: 3px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.postageSolution {
+  background-color: rgb(92, 172, 92);
+  border-radius: 10px;
+  width: 400px;
+  margin-right: auto;
+}
+
+.displayPostageSolution {
+  display: flex;
+  justify-content: space-around;
+  gap: 20px;
+  flex-wrap: wrap;
+  padding-left: 25px;
+}
+
+.stampContainer {
+  background-color: #fff;
+  background-image: radial-gradient(rgb(92, 172, 92), 50%, transparent 50%);
+  background-position: -0.25rem -0.25rem;
+  background-repeat: repeat;
+  background-size: 0.5rem 0.5rem;
+  height: 88px;
+  width: 72px;
+  display: inline-block;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+.stamp {
+  width: 63px;
+  height: 78px;
+  background-color: white;
+  font-weight: 700;
+  display: inline-block;
+  margin-left: 5px;
+  margin-top: 5px;
+  line-height: 80px;
+  text-align: center;
+}

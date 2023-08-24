@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/PostageCalculator/static/css/main.1e865343.css",
+    "main.js": "/PostageCalculator/static/js/main.1522c367.js",
+    "static/js/787.35c85d53.chunk.js": "/PostageCalculator/static/js/787.35c85d53.chunk.js",
+    "index.html": "/PostageCalculator/index.html",
+    "main.1e865343.css.map": "/PostageCalculator/static/css/main.1e865343.css.map",
+    "main.1522c367.js.map": "/PostageCalculator/static/js/main.1522c367.js.map",
+    "787.35c85d53.chunk.js.map": "/PostageCalculator/static/js/787.35c85d53.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.1e865343.css",
+    "static/js/main.1522c367.js"
+  ]
+}

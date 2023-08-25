@@ -4,7 +4,7 @@ import fullLogo from './FullLogo_Transparent.png';
 import './App.css';
 
 function App() {
-  const DEFAULT_STAMP_DENOMINATIONS = [4, 5, 10, 18, 20, 22, 24, 29, 33, 34, 50, 51, 66, 87, 100, 111];
+  const DEFAULT_STAMP_DENOMINATIONS = '4, 5, 10, 18, 20, 22, 24, 29, 33, 34, 50, 51, 66, 87, 100, 111';
   const DEFAULT_POSTAGE_COST = 51;
   const DEFAULT_STAMP_MAX = 4;
 
@@ -67,7 +67,7 @@ function App() {
     );
   };
 
-  const [stampDenominations, setStampDenominations] = useState(DEFAULT_STAMP_DENOMINATIONS.toString());
+  const [stampDenominations, setStampDenominations] = useState(DEFAULT_STAMP_DENOMINATIONS);
   const [postageCost, setPostageCost] = useState(DEFAULT_POSTAGE_COST);
   const [maxStamps, setMaxStamps] = useState(DEFAULT_STAMP_MAX);
   const [solutions, setSolutions] = useState(new Array());

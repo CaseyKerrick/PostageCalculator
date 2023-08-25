@@ -94,7 +94,7 @@ function App() {
       <div className="logoHeader">
         <img src={fullLogo} alt="Snail with an at symbol shell. Happy Mail Postage Calculator" className="logo" />
       </div>
-      <div className='mainList'>
+      <div className='content'>
         <div className='dataEntry'>
           <TextField
             label="Postage Cost in Cents"
@@ -139,7 +139,6 @@ function App() {
             Generate Solutions
           </Button>
         </div>
-        <hr className='divider' />
         <List className='displayPostageSolution'>
           { solutions.map((sol: number[]) => (
             <ListItem key={sol.toString()} className='postageSolution'>{drawStamps(sol)}</ListItem>

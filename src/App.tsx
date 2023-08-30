@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { InputAdornment, TextField, List, ListItem, Button } from '@mui/material';
+import { InputAdornment, TextField, List, ListItem } from '@mui/material';
+import { Pressable, Text } from 'react-native';
 import fullLogo from './FullLogo_Transparent.png';
 import './App.css';
 
@@ -60,9 +61,9 @@ function App() {
   const drawStamps = (stamps: number[]) => {
     return (
       <div>
-        { stamps.map((stamp: number, index: number) =>
-          (<div className="stampContainer"><div key={'' + stamp + index} className="stamp">{stamp}</div></div>)
-        )}
+        { stamps.map((stamp: number, index: number) => (
+          <div key={'container' + stamp + index} className="stampContainer"><div key={'' + stamp + index} className="stamp">{stamp}</div></div>
+        ))}
       </div>
     );
   };
@@ -97,8 +98,8 @@ function App() {
       <div className='content'>
         <div className='dataEntry'>
           <TextField
-            label="Postage Cost in Cents"
-            className='totalCostCents'
+            label="Postage Cost"
+            className='smallDataEntry'
             value={postageCost}
             InputProps={{
               endAdornment: <InputAdornment position="end">¢</InputAdornment>,
@@ -110,8 +111,8 @@ function App() {
             }}
           />
           <TextField
-            label="Max # of Stamps"
-            className='maxStamps'
+            label="Max Stamps Allowed"
+            className='smallDataEntry'
             value={maxStamps}
             onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
               localStorage.setItem('maxStamps', event.target.value);
@@ -120,7 +121,7 @@ function App() {
           />
           <TextField
             label="Stamp Values Available"
-            className='stampValues'
+            className='largeDataEntry'
             value={stampDenominations}
             onChange={(event: React.ChangeEvent<HTMLInputElement>) => setStampDenominations(event.target.value || '')}
             onBlur={() => {
@@ -131,17 +132,17 @@ function App() {
               setStampDenominations(strSortedStampDenoms);
             }}
           />
-          <Button
-            variant="contained"
-            onClick={() => generateSolutions()}
-            className="generateSolution"
+          <Pressable
+            onPress={() => generateSolutions()}
+            // className='generateSolution'
+            aria-label='test test test'
           >
-            Generate Solutions
-          </Button>
+            <div className='generateSolution'><Text><div className='whiteTextButton'>Generate Solutions</div></Text></div>
+          </Pressable>
         </div>
         <List className='displayPostageSolution'>
-          { solutions.map((sol: number[]) => (
-            <ListItem key={sol.toString()} className='postageSolution'>{drawStamps(sol)}</ListItem>
+          { solutions.map((sol: number[], index: number) => (
+            <ListItem key={sol.toString() + index.toString()} className='postageSolution'>{drawStamps(sol)}</ListItem>
           ))}
         </List>
       </div>

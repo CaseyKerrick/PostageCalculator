@@ -2,71 +2,89 @@
   display: block;
   margin-left: auto;
   margin-right: auto;
-  margin-top: -30px;
   width: 80%;
   max-width: 750px;
 }
 
 .content {
-  width: 70%;
+  width: 100%;
+  max-width: 666px;
   margin-left: auto;
   margin-right: auto;
 }
 
 .dataEntry {
-  padding: 20px;
-  /* height: 90px; */
+  padding: 10px;
   border: 3px solid green;
   border-radius: 3px;
   margin-bottom: 30px;
+  width: calc(100% - 40px);
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .totalCostCents {
-  /* margin-right: 10px;
-  width: 150px; */
-  width: 49%;
-  margin-right: 1%;
+  width: 100%;
+  max-width: 300px;
+  margin: 10px;
+}
+
+.smallDataEntry {
+  width: calc(100% - 20px);
+  max-width: 300px;
+  margin: 10px;
+}
+
+.largeDataEntry {
+  width: calc(100% - 20px);
+  margin: 10px;
 }
 
 .stampValues {
   /* width: 530px; */
-  width: 100%;
   margin-top: 20px;
-}
-
-.maxStamps {
-  /* width: 150px;
-  margin-left: 10px;
-  margin-right: 10px; */
-  width: 49%;
-  margin-left: 1%;
 }
 
 .generateSolution {
-  margin-top: 20px;
-  width: 49%;
+  width: calc(100% - 20px);
+  max-width: 300px;
+  margin: 10px;
+  height: 40px;
+  border-radius: 3px;
+  font-weight: 700;
   display: inline-block;
-  margin-left: auto;
-  margin-right: auto;
   background-color: green;
   &:hover {
     background-color: rgb(17, 155, 17);
   }
 }
 
+.whiteTextButton {
+  color: white;
+  text-align: center;
+  line-height: 40px;
+  font-family: Roboto, Helvetica, Arial, sans-serif;
+  font-size: 13pt;
+
+}
+
 .postageSolution {
   background-color: rgb(92, 172, 92);
   border-radius: 10px;
   width: 400px;
+  /* margin-right: auto; */
+  /* margin: 20px; */
+  margin-left: auto;
   margin-right: auto;
+  margin-bottom: 20px;
 }
 
 .displayPostageSolution {
-  display: flex;
+  /* display: flex;
   justify-content: space-around;
   gap: 20px;
   flex-wrap: wrap;
-  padding-left: 25px;
+  padding-left: 25px; */
 }
 
 .stampContainer {

@@ -1,16 +1,16 @@
 {
   "files": {
-    "main.css": "/PostageCalculator/static/css/main.aff70b92.css",
-    "main.js": "/PostageCalculator/static/js/main.70e6d172.js",
+    "main.css": "/PostageCalculator/static/css/main.b047b611.css",
+    "main.js": "/PostageCalculator/static/js/main.9504ee43.js",
     "static/js/787.35c85d53.chunk.js": "/PostageCalculator/static/js/787.35c85d53.chunk.js",
     "static/media/FullLogo_Transparent.png": "/PostageCalculator/static/media/FullLogo_Transparent.87abe4c197a35658b24e.png",
     "index.html": "/PostageCalculator/index.html",
-    "main.aff70b92.css.map": "/PostageCalculator/static/css/main.aff70b92.css.map",
-    "main.70e6d172.js.map": "/PostageCalculator/static/js/main.70e6d172.js.map",
+    "main.b047b611.css.map": "/PostageCalculator/static/css/main.b047b611.css.map",
+    "main.9504ee43.js.map": "/PostageCalculator/static/js/main.9504ee43.js.map",
     "787.35c85d53.chunk.js.map": "/PostageCalculator/static/js/787.35c85d53.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.aff70b92.css",
-    "static/js/main.70e6d172.js"
+    "static/css/main.b047b611.css",
+    "static/js/main.9504ee43.js"
   ]
 }

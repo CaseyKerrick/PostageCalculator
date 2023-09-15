@@ -18,7 +18,6 @@
   border: 3px solid green;
   border-radius: 3px;
   margin-bottom: 30px;
-  width: calc(100% - 40px);
   margin-left: auto;
   margin-right: auto;
 }
@@ -59,19 +58,32 @@
   }
 }
 
+.resetOptions {
+  width: calc(100% - 20px);
+  max-width: 300px;
+  margin: 10px;
+  height: 40px;
+  border-radius: 3px;
+  font-weight: 700;
+  display: inline-block;
+  background-color: gray;
+  &:hover {
+    background-color: lightslategray;
+  }
+}
+
 .whiteTextButton {
   color: white;
   text-align: center;
   line-height: 40px;
   font-family: Roboto, Helvetica, Arial, sans-serif;
   font-size: 13pt;
-
 }
 
 .postageSolution {
   background-color: rgb(92, 172, 92);
   border-radius: 10px;
-  width: 400px;
+  width: 360px;
   /* margin-right: auto; */
   /* margin: 20px; */
   margin-left: auto;
@@ -79,13 +91,13 @@
   margin-bottom: 20px;
 }
 
-.displayPostageSolution {
+/* .displayPostageSolution { */
   /* display: flex;
   justify-content: space-around;
   gap: 20px;
   flex-wrap: wrap;
   padding-left: 25px; */
-}
+/* } */
 
 .stampContainer {
   background-color: #fff;

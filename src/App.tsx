@@ -12,65 +12,79 @@ function App() {
   const sortInts = (a: number, b: number) => a - b;
 
   const generateSolutions = () => {
-    const integerDenominations = stampDenominations.split(',').map((item: string) => Number.parseInt(item)).reverse();
+    const cleanRequiredStamps = spliterate(desiredDenominations);
+    const requiredStampsSum = sum(cleanRequiredStamps);
 
-    let sols: any = [];
-    for (let x = 0; x < integerDenominations.length; x++) {
-      const current = integerDenominations[x];
+    if (postageCost === requiredStampsSum) {
+      setSolutions(sortAndRemoveSolutionDuplicates([cleanRequiredStamps]));
+      return;
+    }
 
-      if (current <= postageCost) {
-        const solution = generateIndividualSolution([current], postageCost - current, integerDenominations);
+    const cleanStampDenoms = spliterate(stampDenominations);
+    let rawSolutions: number[][] = scrySolutions([cleanRequiredStamps], postageCost, cleanStampDenoms, maxStamps - cleanRequiredStamps.length);
 
-        if (solution && solution.length > 0) {
-          sols = [...solution, ...sols];
+    setSolutions(sortAndRemoveSolutionDuplicates(rawSolutions));
+  };
+
+  const scrySolutions = (rawSolutions: number[][], maxPostage: number, availableDenominations: number[], stampSlotsRemaining: number): number[][] => {
+    if (stampSlotsRemaining <= 0) {
+      return rawSolutions;
+    }
+
+    let nextSolutions: number[][] = [];
+    for (let x = 0; x < rawSolutions.length; x++) {
+      const currentSum = sum(rawSolutions[x]);
+
+      for (let y = 0; y < availableDenominations.length; y++) {
+        if (currentSum + availableDenominations[y] > maxPostage) {
+          break;
         }
+        nextSolutions.push([...rawSolutions[x], availableDenominations[y]]);
       }
     }
 
-    setSolutions(sortAndRemoveSolutionDuplicates(sols));
+    return scrySolutions([...rawSolutions, ...nextSolutions], maxPostage, availableDenominations, stampSlotsRemaining - 1);
+  };
+
+  const spliterate = (rawArr: string): number[] => {
+    return rawArr.split(',').map((item: string) => Number.parseInt(item)).filter(item => !!item);
+  };
+
+  const sum = (arr: number[]): number => {
+    return arr.length > 0 ? arr.reduce((total: number, curr: number) => total + curr) : 0;
   };
 
   const sortAndRemoveSolutionDuplicates = (arr: number[][]) => {
-    const sortedStrArrays = arr.map(solution => {
+    const noEmptiesArr = arr.filter(item => item.length > 0 && sum(item) === postageCost);
+    const sortedStrArrays = noEmptiesArr.map(solution => {
       const sorted = solution.sort(sortInts);
       return sorted.toString();
     });
     const duplicatesRemoved = new Set(sortedStrArrays);
-    return Array.from(duplicatesRemoved).map(entry => entry.split(',')).reverse();
-  }
-
-  const generateIndividualSolution = (stamps: number[], remainingAmount: number, remainingStamps: number[]) => {
-    if (remainingAmount === 0) {
-      return [stamps];
-    } else if (remainingAmount < remainingStamps[remainingStamps.length - 1] || stamps.length >= maxStamps) {
-      return [];
-    }
-
-    let newSolutions: any = [];
-    for (let x = 0; x < remainingStamps.length; x++) {
-      const current = remainingStamps[x];
-      if (remainingAmount >= current) {
-        const deeperSolutions = generateIndividualSolution([current, ...stamps], remainingAmount - current, remainingStamps.slice(x));
-        newSolutions = [...deeperSolutions, ...newSolutions];
-      }
-    }
-
-    return newSolutions;
+    return Array.from(duplicatesRemoved).map(entry => entry.split(','));
   };
 
   const drawStamps = (stamps: number[]) => {
     return (
       <div>
         { stamps.map((stamp: number, index: number) => (
-          <div key={'container' + stamp + index} className="stampContainer"><div key={'' + stamp + index} className="stamp">{stamp}</div></div>
+          <div key={`container${stamp}${index}`} className="stampContainer"><div key={`${stamp}${index}`} className="stamp">{stamp}</div></div>
         ))}
       </div>
     );
   };
 
+  const resetVariables = () => {
+    setStampDenominations(DEFAULT_STAMP_DENOMINATIONS);
+    setPostageCost(DEFAULT_POSTAGE_COST);
+    setMaxStamps(DEFAULT_STAMP_MAX);
+    setDesiredDenominations('');
+  };
+
   const [stampDenominations, setStampDenominations] = useState(DEFAULT_STAMP_DENOMINATIONS);
   const [postageCost, setPostageCost] = useState(DEFAULT_POSTAGE_COST);
   const [maxStamps, setMaxStamps] = useState(DEFAULT_STAMP_MAX);
+  const [desiredDenominations, setDesiredDenominations] = useState('');
   const [solutions, setSolutions] = useState(new Array());
 
   useEffect(() => {
@@ -120,25 +134,54 @@ function App() {
             }}
           />
           <TextField
-            label="Stamp Values Available"
+            label="All Stamp Values Available"
             className='largeDataEntry'
             value={stampDenominations}
             onChange={(event: React.ChangeEvent<HTMLInputElement>) => setStampDenominations(event.target.value || '')}
             onBlur={() => {
               const intStampDenoms = stampDenominations.split(',').map(strDenom => Number.parseInt(strDenom.trim()));
-              const strSortedStampDenoms = intStampDenoms.sort(sortInts).toString();
+              const strSortedStampDenoms = intStampDenoms.sort(sortInts).join(', ');
 
-              localStorage.setItem('stampDenominations', strSortedStampDenoms);
-              setStampDenominations(strSortedStampDenoms);
+              var regExp = /[a-zA-Z]/;
+              if (!regExp.test(strSortedStampDenoms)) {
+                localStorage.setItem('stampDenominations', strSortedStampDenoms);
+                setStampDenominations(strSortedStampDenoms);
+              } else {
+                setStampDenominations(DEFAULT_STAMP_DENOMINATIONS);
+              }
             }}
           />
-          <Pressable
-            onPress={() => generateSolutions()}
-            // className='generateSolution'
-            aria-label='test test test'
-          >
-            <div className='generateSolution'><Text><div className='whiteTextButton'>Generate Solutions</div></Text></div>
-          </Pressable>
+          <TextField
+            label="Stamp Values Desired"
+            className='largeDataEntry'
+            value={desiredDenominations}
+            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+              if (event.target.value.toString() === '' || !!event.target.value) {
+                setDesiredDenominations(event.target.value.toString());
+              }
+            }}
+            onBlur={() => {
+              const intStampDenoms = desiredDenominations.split(',').map(strDenom => Number.parseInt(strDenom.trim()));
+              const strSortedStampDenoms = intStampDenoms.sort(sortInts).join(', ');
+
+              // TODO: Use a RegEx to determine if the inputted string is a comma separated list
+              // FOR NOW: just check if the input contains a letter
+              var regExp = /[a-zA-Z]/;
+              if (!regExp.test(strSortedStampDenoms)) {
+                setDesiredDenominations(strSortedStampDenoms);
+              }
+            }}
+          />
+          <div className='generateSolution'>
+            <Pressable onPress={() => generateSolutions()} aria-label='Create postage solutions'>
+              <Text><div className='whiteTextButton'>Go!</div></Text>
+            </Pressable>
+          </div>
+          <div className='resetOptions'>
+            <Pressable onPress={() => resetVariables()} aria-label='Reset all options'>
+              <Text><div className='whiteTextButton'>Reset</div></Text>
+            </Pressable>
+          </div>
         </div>
         <List className='displayPostageSolution'>
           { solutions.map((sol: number[], index: number) => (

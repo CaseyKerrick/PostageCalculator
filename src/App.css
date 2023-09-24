@@ -72,6 +72,34 @@
   }
 }
 
+.footerText {
+  font-size: 11pt;
+  width: 33.33%;
+  display: inline-block;
+  text-align: center;
+  height: 30px;
+  margin-top: -1px;
+}
+
+.footerButton {
+  color: #fff;
+  /* background-color: rgb(92, 172, 92);
+  border-top: 1px solid rgb(92, 172, 92); */
+  background-color: green;
+  border-top: 1px solid green;
+  height: 30px;
+}
+
+.footer {
+  margin-top: -10px;
+  margin-bottom: 10px;
+  overflow: hidden;
+  height: 30px;
+  line-height: 30px;
+  border-radius: 10px;
+  border: 3px solid green;
+}
+
 .whiteTextButton {
   color: white;
   text-align: center;
@@ -90,14 +118,6 @@
   margin-right: auto;
   margin-bottom: 20px;
 }
-
-/* .displayPostageSolution { */
-  /* display: flex;
-  justify-content: space-around;
-  gap: 20px;
-  flex-wrap: wrap;
-  padding-left: 25px; */
-/* } */
 
 .stampContainer {
   background-color: #fff;

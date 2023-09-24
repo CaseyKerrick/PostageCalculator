@@ -2,28 +2,29 @@ import React, { useState, useEffect } from 'react';
 import { InputAdornment, TextField, List, ListItem } from '@mui/material';
 import { Pressable, Text } from 'react-native';
 import fullLogo from './FullLogo_Transparent.png';
+import { removeDuplicateLists, spliterate, subtractLists, sortInts, sum } from './util';
 import './App.css';
 
 function App() {
   const DEFAULT_STAMP_DENOMINATIONS = '4, 5, 10, 18, 20, 22, 24, 29, 33, 34, 50, 51, 66, 87, 100, 111';
   const DEFAULT_POSTAGE_COST = 51;
   const DEFAULT_STAMP_MAX = 4;
+  const STRING_CONTAINS_LETTER = /[a-zA-Z]/;
 
-  const sortInts = (a: number, b: number) => a - b;
 
   const generateSolutions = () => {
     const cleanRequiredStamps = spliterate(desiredDenominations);
     const requiredStampsSum = sum(cleanRequiredStamps);
 
     if (postageCost === requiredStampsSum) {
-      setSolutions(sortAndRemoveSolutionDuplicates([cleanRequiredStamps]));
+      setSolutions(sortAndRemoveArrayDuplicates([cleanRequiredStamps]));
       return;
     }
 
-    const cleanStampDenoms = spliterate(stampDenominations);
+    const cleanStampDenoms = subtractLists(spliterate(stampDenominations), spliterate(excludedDenominations));
     let rawSolutions: number[][] = scrySolutions([cleanRequiredStamps], postageCost, cleanStampDenoms, maxStamps - cleanRequiredStamps.length);
 
-    setSolutions(sortAndRemoveSolutionDuplicates(rawSolutions));
+    setSolutions(sortAndRemoveArrayDuplicates(rawSolutions));
   };
 
   const scrySolutions = (rawSolutions: number[][], maxPostage: number, availableDenominations: number[], stampSlotsRemaining: number): number[][] => {
@@ -37,31 +38,20 @@ function App() {
 
       for (let y = 0; y < availableDenominations.length; y++) {
         if (currentSum + availableDenominations[y] > maxPostage) {
+          nextSolutions.push([...rawSolutions[x]]);
           break;
         }
         nextSolutions.push([...rawSolutions[x], availableDenominations[y]]);
       }
     }
 
-    return scrySolutions([...rawSolutions, ...nextSolutions], maxPostage, availableDenominations, stampSlotsRemaining - 1);
+    return scrySolutions([...removeDuplicateLists(nextSolutions)], maxPostage, availableDenominations, stampSlotsRemaining - 1);
   };
 
-  const spliterate = (rawArr: string): number[] => {
-    return rawArr.split(',').map((item: string) => Number.parseInt(item)).filter(item => !!item);
-  };
-
-  const sum = (arr: number[]): number => {
-    return arr.length > 0 ? arr.reduce((total: number, curr: number) => total + curr) : 0;
-  };
-
-  const sortAndRemoveSolutionDuplicates = (arr: number[][]) => {
-    const noEmptiesArr = arr.filter(item => item.length > 0 && sum(item) === postageCost);
-    const sortedStrArrays = noEmptiesArr.map(solution => {
-      const sorted = solution.sort(sortInts);
-      return sorted.toString();
-    });
-    const duplicatesRemoved = new Set(sortedStrArrays);
-    return Array.from(duplicatesRemoved).map(entry => entry.split(','));
+  const sortAndRemoveArrayDuplicates = (arr: number[][]) => {
+    const noEmptiesOrBadSumsArr = arr.filter(item => item.length > 0 && sum(item) === postageCost);
+    const sortedByLengthArr = noEmptiesOrBadSumsArr.sort((a: number[], b: number[]) => a.length - b.length);
+    return sortedByLengthArr;
   };
 
   const drawStamps = (stamps: number[]) => {
@@ -74,17 +64,28 @@ function App() {
     );
   };
 
+  const onListBlur = (key: string, listVar: string, setListVar: Function) => {
+    const numberList = listVar.split(',').map(item => Number.parseInt(item)).filter(item => !!item);
+    const strSortedList = numberList.sort(sortInts).join(', ');
+    if (!STRING_CONTAINS_LETTER.test(strSortedList)) {
+      setListVar(strSortedList);
+      localStorage.setItem(key, strSortedList);
+    }
+  };
+
   const resetVariables = () => {
     setStampDenominations(DEFAULT_STAMP_DENOMINATIONS);
     setPostageCost(DEFAULT_POSTAGE_COST);
     setMaxStamps(DEFAULT_STAMP_MAX);
     setDesiredDenominations('');
+    setExcludedDenominations('');
   };
 
   const [stampDenominations, setStampDenominations] = useState(DEFAULT_STAMP_DENOMINATIONS);
   const [postageCost, setPostageCost] = useState(DEFAULT_POSTAGE_COST);
   const [maxStamps, setMaxStamps] = useState(DEFAULT_STAMP_MAX);
   const [desiredDenominations, setDesiredDenominations] = useState('');
+  const [excludedDenominations, setExcludedDenominations] = useState('');
   const [solutions, setSolutions] = useState(new Array());
 
   useEffect(() => {
@@ -102,7 +103,17 @@ function App() {
     if (storedDenominations) {
       setStampDenominations(storedDenominations);
     }
-  }, [setPostageCost, setMaxStamps, setStampDenominations]);
+
+    const storedDesiredDenominations = localStorage.getItem('desiredDenominations');
+    if (storedDesiredDenominations) {
+      setDesiredDenominations(storedDesiredDenominations);
+    }
+
+    const storedExcludedDenominations = localStorage.getItem('excludedDenominations');
+    if (storedExcludedDenominations) {
+      setExcludedDenominations(storedExcludedDenominations);
+    }
+  }, [setPostageCost, setMaxStamps, setStampDenominations, setDesiredDenominations, setExcludedDenominations]);
 
   return (
     <>
@@ -112,7 +123,7 @@ function App() {
       <div className='content'>
         <div className='dataEntry'>
           <TextField
-            label="Postage Cost"
+            label='Postage Cost'
             className='smallDataEntry'
             value={postageCost}
             InputProps={{
@@ -125,7 +136,7 @@ function App() {
             }}
           />
           <TextField
-            label="Max Stamps Allowed"
+            label='Max Stamps Allowed'
             className='smallDataEntry'
             value={maxStamps}
             onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
@@ -134,43 +145,25 @@ function App() {
             }}
           />
           <TextField
-            label="All Stamp Values Available"
+            label="Stamp Denominations Available"
             className='largeDataEntry'
             value={stampDenominations}
-            onChange={(event: React.ChangeEvent<HTMLInputElement>) => setStampDenominations(event.target.value || '')}
-            onBlur={() => {
-              const intStampDenoms = stampDenominations.split(',').map(strDenom => Number.parseInt(strDenom.trim()));
-              const strSortedStampDenoms = intStampDenoms.sort(sortInts).join(', ');
-
-              var regExp = /[a-zA-Z]/;
-              if (!regExp.test(strSortedStampDenoms)) {
-                localStorage.setItem('stampDenominations', strSortedStampDenoms);
-                setStampDenominations(strSortedStampDenoms);
-              } else {
-                setStampDenominations(DEFAULT_STAMP_DENOMINATIONS);
-              }
-            }}
+            onChange={(event: React.ChangeEvent<HTMLInputElement>) => setStampDenominations(event.target.value)}
+            onBlur={() => onListBlur('stampDenominations', stampDenominations, setStampDenominations)}
           />
           <TextField
-            label="Stamp Values Desired"
+            label="Stamp Denominations To Include"
             className='largeDataEntry'
             value={desiredDenominations}
-            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-              if (event.target.value.toString() === '' || !!event.target.value) {
-                setDesiredDenominations(event.target.value.toString());
-              }
-            }}
-            onBlur={() => {
-              const intStampDenoms = desiredDenominations.split(',').map(strDenom => Number.parseInt(strDenom.trim()));
-              const strSortedStampDenoms = intStampDenoms.sort(sortInts).join(', ');
-
-              // TODO: Use a RegEx to determine if the inputted string is a comma separated list
-              // FOR NOW: just check if the input contains a letter
-              var regExp = /[a-zA-Z]/;
-              if (!regExp.test(strSortedStampDenoms)) {
-                setDesiredDenominations(strSortedStampDenoms);
-              }
-            }}
+            onChange={(event: React.ChangeEvent<HTMLInputElement>) => setDesiredDenominations(event.target.value)}
+            onBlur={() => onListBlur('desiredDenominations', desiredDenominations, setDesiredDenominations)}
+          />
+          <TextField
+            label="Stamp Denominations To Exclude"
+            className='largeDataEntry'
+            value={excludedDenominations}
+            onChange={(event: React.ChangeEvent<HTMLInputElement>) => setExcludedDenominations(event.target.value)}
+            onBlur={() => onListBlur('excludedDenominations', excludedDenominations, setExcludedDenominations)}
           />
           <div className='generateSolution'>
             <Pressable onPress={() => generateSolutions()} aria-label='Create postage solutions'>
@@ -188,6 +181,11 @@ function App() {
             <ListItem key={sol.toString() + index.toString()} className='postageSolution'>{drawStamps(sol)}</ListItem>
           ))}
         </List>
+        {/* <div className='footer'>
+          <div className='footerText footerButton'><Text>Source Code</Text></div>
+          <div className='footerText'><Text>Copyright (c) 2023</Text></div>
+          <div className='footerText footerButton'><Text>Donate</Text></div>
+        </div> */}
       </div>
     </>
   );

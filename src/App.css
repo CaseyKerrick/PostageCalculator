@@ -85,19 +85,17 @@
   color: #fff;
   /* background-color: rgb(92, 172, 92);
   border-top: 1px solid rgb(92, 172, 92); */
-  background-color: green;
-  border-top: 1px solid green;
+  /* background-color: green;
+  border-top: 1px solid green; */
   height: 30px;
 }
 
 .footer {
   margin-top: -10px;
   margin-bottom: 10px;
-  overflow: hidden;
+  border-top: 3px solid green;
   height: 30px;
   line-height: 30px;
-  border-radius: 10px;
-  border: 3px solid green;
 }
 
 .whiteTextButton {
@@ -112,8 +110,6 @@
   background-color: rgb(92, 172, 92);
   border-radius: 10px;
   width: 360px;
-  /* margin-right: auto; */
-  /* margin: 20px; */
   margin-left: auto;
   margin-right: auto;
   margin-bottom: 20px;
@@ -129,8 +125,6 @@
   width: 72px;
   display: inline-block;
   margin: 5px;
-  /* margin-left: 10px;
-  margin-right: 10px; */
 }
 
 .stamp {
@@ -143,4 +137,11 @@
   margin-top: 5px;
   line-height: 80px;
   text-align: center;
+}
+
+.solutionButtonHelper {
+  /* background-color: blue; */
+  width: 360px;
+  margin-left: auto;
+  margin-right: auto;
 }

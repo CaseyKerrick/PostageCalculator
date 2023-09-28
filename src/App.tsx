@@ -11,8 +11,8 @@ function App() {
   const DEFAULT_STAMP_MAX = 4;
   const STRING_CONTAINS_LETTER = /[a-zA-Z]/;
 
-
   const generateSolutions = () => {
+
     const cleanRequiredStamps = spliterate(desiredDenominations);
     const requiredStampsSum = sum(cleanRequiredStamps);
 
@@ -25,6 +25,7 @@ function App() {
     let rawSolutions: number[][] = scrySolutions([cleanRequiredStamps], postageCost, cleanStampDenoms, maxStamps - cleanRequiredStamps.length);
 
     setSolutions(sortAndRemoveArrayDuplicates(rawSolutions));
+    setShowFreshSolutions(true);
   };
 
   const scrySolutions = (rawSolutions: number[][], maxPostage: number, availableDenominations: number[], stampSlotsRemaining: number): number[][] => {
@@ -54,11 +55,57 @@ function App() {
     return sortedByLengthArr;
   };
 
+  const a = () => {
+    if (showFreshSolutions) {
+      return drawList(solutions);
+    } else if (savedSolutions.length > 0) {
+      return drawList(savedSolutions, false);
+    }
+
+    return 'To save a solution, click on it.';
+  }
+
+  const modifySavedSolutions = (index: number, addMode: boolean = true) => {
+    if (!addMode) {
+      savedSolutions.splice(index, 1);
+      const newSolutions = [...savedSolutions];
+
+      setSavedSolutions(newSolutions);
+      localStorage.setItem('savedSolutions', newSolutions.map(item => item.join(',')).join(';'));
+    } else {
+      const newSolutions = [...savedSolutions, solutions[index]];
+
+      setSavedSolutions(newSolutions);
+      localStorage.setItem('savedSolutions', newSolutions.map(item => item.join(',')).join(';'));
+    }
+  };
+
+  const drawList = (arr: number[][], addMode: boolean = true) => {
+    return (
+      <List className='displayPostageSolution'>
+        { arr.map((sol: number[], index: number) => (
+          <div className='solutionButtonHelper'>
+            <Pressable
+              onPress={(event) => modifySavedSolutions(index, addMode)}
+              aria-label={`Click to ${addMode ? 'add to' : 'remove from'} saved solutions`}
+            >
+              <ListItem key={sol.toString() + index.toString()} className='postageSolution'>
+                {drawStamps(sol)}
+              </ListItem>
+            </Pressable>
+          </div>
+        ))}
+      </List>
+    );
+  };
+
   const drawStamps = (stamps: number[]) => {
     return (
       <div>
         { stamps.map((stamp: number, index: number) => (
-          <div key={`container${stamp}${index}`} className="stampContainer"><div key={`${stamp}${index}`} className="stamp">{stamp}</div></div>
+          <div key={`container${stamp}${index}`} className="stampContainer">
+            <div key={`${stamp}${index}`} className="stamp">{stamp}</div>
+          </div>
         ))}
       </div>
     );
@@ -73,12 +120,9 @@ function App() {
     }
   };
 
-  const resetVariables = () => {
-    setStampDenominations(DEFAULT_STAMP_DENOMINATIONS);
-    setPostageCost(DEFAULT_POSTAGE_COST);
-    setMaxStamps(DEFAULT_STAMP_MAX);
-    setDesiredDenominations('');
-    setExcludedDenominations('');
+  const showSavedSolutions = () => {
+    setSolutions([...savedSolutions, '1,2,3']);
+    setShowFreshSolutions(false);
   };
 
   const [stampDenominations, setStampDenominations] = useState(DEFAULT_STAMP_DENOMINATIONS);
@@ -87,6 +131,8 @@ function App() {
   const [desiredDenominations, setDesiredDenominations] = useState('');
   const [excludedDenominations, setExcludedDenominations] = useState('');
   const [solutions, setSolutions] = useState(new Array());
+  const [savedSolutions, setSavedSolutions] = useState(new Array());
+  const [showFreshSolutions, setShowFreshSolutions] = useState(true);
 
   useEffect(() => {
     const storedPostageCost = localStorage.getItem('postageCost');
@@ -113,7 +159,13 @@ function App() {
     if (storedExcludedDenominations) {
       setExcludedDenominations(storedExcludedDenominations);
     }
-  }, [setPostageCost, setMaxStamps, setStampDenominations, setDesiredDenominations, setExcludedDenominations]);
+
+    const storedSavedSolutions = localStorage.getItem('savedSolutions');
+    if (storedSavedSolutions) {
+      const cleanSavedSolutions = storedSavedSolutions.split(';').map(item => spliterate(item));
+      setSavedSolutions(cleanSavedSolutions);
+    }
+  }, [setPostageCost, setMaxStamps, setStampDenominations, setDesiredDenominations, setExcludedDenominations, setSavedSolutions]);
 
   return (
     <>
@@ -123,7 +175,7 @@ function App() {
       <div className='content'>
         <div className='dataEntry'>
           <TextField
-            label='Postage Cost'
+            label='Total Postage Cost'
             className='smallDataEntry'
             value={postageCost}
             InputProps={{
@@ -145,42 +197,38 @@ function App() {
             }}
           />
           <TextField
-            label="Stamp Denominations Available"
+            label="Postage Denominations Available"
             className='largeDataEntry'
             value={stampDenominations}
             onChange={(event: React.ChangeEvent<HTMLInputElement>) => setStampDenominations(event.target.value)}
             onBlur={() => onListBlur('stampDenominations', stampDenominations, setStampDenominations)}
           />
           <TextField
-            label="Stamp Denominations To Include"
+            label="Postage To Include"
             className='largeDataEntry'
             value={desiredDenominations}
             onChange={(event: React.ChangeEvent<HTMLInputElement>) => setDesiredDenominations(event.target.value)}
             onBlur={() => onListBlur('desiredDenominations', desiredDenominations, setDesiredDenominations)}
           />
           <TextField
-            label="Stamp Denominations To Exclude"
+            label="Postage To Exclude"
             className='largeDataEntry'
             value={excludedDenominations}
             onChange={(event: React.ChangeEvent<HTMLInputElement>) => setExcludedDenominations(event.target.value)}
             onBlur={() => onListBlur('excludedDenominations', excludedDenominations, setExcludedDenominations)}
           />
           <div className='generateSolution'>
-            <Pressable onPress={() => generateSolutions()} aria-label='Create postage solutions'>
+            <Pressable onPress={generateSolutions} aria-label='Create postage solutions'>
               <Text><div className='whiteTextButton'>Go!</div></Text>
             </Pressable>
           </div>
           <div className='resetOptions'>
-            <Pressable onPress={() => resetVariables()} aria-label='Reset all options'>
-              <Text><div className='whiteTextButton'>Reset</div></Text>
+            <Pressable onPress={showSavedSolutions} aria-label='Reset all options'>
+              <Text><div className='whiteTextButton'>Saved Combinations</div></Text>
             </Pressable>
           </div>
         </div>
-        <List className='displayPostageSolution'>
-          { solutions.map((sol: number[], index: number) => (
-            <ListItem key={sol.toString() + index.toString()} className='postageSolution'>{drawStamps(sol)}</ListItem>
-          ))}
-        </List>
+        {a()}
         {/* <div className='footer'>
           <div className='footerText footerButton'><Text>Source Code</Text></div>
           <div className='footerText'><Text>Copyright (c) 2023</Text></div>

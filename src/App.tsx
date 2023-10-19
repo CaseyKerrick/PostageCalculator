@@ -12,7 +12,6 @@ function App() {
   const STRING_CONTAINS_LETTER = /[a-zA-Z]/;
 
   const generateSolutions = () => {
-
     const cleanRequiredStamps = spliterate(desiredDenominations);
     const requiredStampsSum = sum(cleanRequiredStamps);
 
@@ -55,7 +54,7 @@ function App() {
     return sortedByLengthArr;
   };
 
-  const a = () => {
+  const displaySolutions = () => {
     if (showFreshSolutions) {
       return drawList(solutions);
     } else if (savedSolutions.length > 0) {
@@ -90,7 +89,7 @@ function App() {
               aria-label={`Click to ${addMode ? 'add to' : 'remove from'} saved solutions`}
             >
               <ListItem key={sol.toString() + index.toString()} className='postageSolution'>
-                {drawStamps(sol)}
+                {drawStamps(sol, addMode)}
               </ListItem>
             </Pressable>
           </div>
@@ -99,7 +98,7 @@ function App() {
     );
   };
 
-  const drawStamps = (stamps: number[]) => {
+  const drawStamps = (stamps: number[], addMode: boolean = true) => {
     return (
       <div>
         { stamps.map((stamp: number, index: number) => (
@@ -228,7 +227,7 @@ function App() {
             </Pressable>
           </div>
         </div>
-        {a()}
+        {displaySolutions()}
         {/* <div className='footer'>
           <div className='footerText footerButton'><Text>Source Code</Text></div>
           <div className='footerText'><Text>Copyright (c) 2023</Text></div>

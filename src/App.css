@@ -113,6 +113,13 @@
   margin-left: auto;
   margin-right: auto;
   margin-bottom: 20px;
+  &:hover {
+    background-color: rgb(17, 155, 17);
+
+    .stampContainer {
+      background-image: radial-gradient(rgb(17, 155, 17), 50%, transparent 50%);
+    }
+  }
 }
 
 .stampContainer {
@@ -140,7 +147,6 @@
 }
 
 .solutionButtonHelper {
-  /* background-color: blue; */
   width: 360px;
   margin-left: auto;
   margin-right: auto;

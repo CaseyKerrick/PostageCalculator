@@ -2,57 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { InputAdornment, TextField, List, ListItem } from '@mui/material';
 import { Pressable, Text } from 'react-native';
 import fullLogo from './FullLogo_Transparent.png';
-import { removeDuplicateLists, spliterate, subtractLists, sortInts, sum } from './util';
+import { generateSolutions } from './services/calculator';
+import { spliterate, sortInts } from './services/util';
 import './App.css';
 
+const DEFAULT_STAMP_DENOMINATIONS = '4, 5, 10, 18, 20, 22, 24, 29, 33, 34, 50, 51, 66, 87, 100, 111';
+const DEFAULT_POSTAGE_COST = '51';
+const DEFAULT_STAMP_MAX = '4';
+const STRING_CONTAINS_LETTER = /[a-zA-Z]/;
+
 function App() {
-  const DEFAULT_STAMP_DENOMINATIONS = '4, 5, 10, 18, 20, 22, 24, 29, 33, 34, 50, 51, 66, 87, 100, 111';
-  const DEFAULT_POSTAGE_COST = 51;
-  const DEFAULT_STAMP_MAX = 4;
-  const STRING_CONTAINS_LETTER = /[a-zA-Z]/;
-
-  const generateSolutions = () => {
-    const cleanRequiredStamps = spliterate(desiredDenominations);
-    const requiredStampsSum = sum(cleanRequiredStamps);
-
-    if (postageCost === requiredStampsSum) {
-      setSolutions(sortAndRemoveArrayDuplicates([cleanRequiredStamps]));
-      return;
-    }
-
-    const cleanStampDenoms = subtractLists(spliterate(stampDenominations), spliterate(excludedDenominations));
-    let rawSolutions: number[][] = scrySolutions([cleanRequiredStamps], postageCost, cleanStampDenoms, maxStamps - cleanRequiredStamps.length);
-
-    setSolutions(sortAndRemoveArrayDuplicates(rawSolutions));
-    setShowFreshSolutions(true);
-  };
-
-  const scrySolutions = (rawSolutions: number[][], maxPostage: number, availableDenominations: number[], stampSlotsRemaining: number): number[][] => {
-    if (stampSlotsRemaining <= 0) {
-      return rawSolutions;
-    }
-
-    let nextSolutions: number[][] = [];
-    for (let x = 0; x < rawSolutions.length; x++) {
-      const currentSum = sum(rawSolutions[x]);
-
-      for (let y = 0; y < availableDenominations.length; y++) {
-        if (currentSum + availableDenominations[y] > maxPostage) {
-          nextSolutions.push([...rawSolutions[x]]);
-          break;
-        }
-        nextSolutions.push([...rawSolutions[x], availableDenominations[y]]);
-      }
-    }
-
-    return scrySolutions([...removeDuplicateLists(nextSolutions)], maxPostage, availableDenominations, stampSlotsRemaining - 1);
-  };
-
-  const sortAndRemoveArrayDuplicates = (arr: number[][]) => {
-    const noEmptiesOrBadSumsArr = arr.filter(item => item.length > 0 && sum(item) === postageCost);
-    const sortedByLengthArr = noEmptiesOrBadSumsArr.sort((a: number[], b: number[]) => a.length - b.length);
-    return sortedByLengthArr;
-  };
 
   const displaySolutions = () => {
     if (showFreshSolutions) {
@@ -136,12 +95,12 @@ function App() {
   useEffect(() => {
     const storedPostageCost = localStorage.getItem('postageCost');
     if (storedPostageCost) {
-      setPostageCost(Number.parseInt(storedPostageCost));
+      setPostageCost(storedPostageCost);
     }
 
     const storedMaxStamps = localStorage.getItem('maxStamps');
     if (storedMaxStamps) {
-      setMaxStamps(Number.parseInt(storedMaxStamps));
+      setMaxStamps(storedMaxStamps);
     }
 
     const storedDenominations = localStorage.getItem('stampDenominations');
@@ -169,7 +128,7 @@ function App() {
   return (
     <>
       <div className="logoHeader">
-        <img src={fullLogo} alt="Snail with an at symbol shell. Happy Mail Postage Calculator" className="logo" />
+        <img src={fullLogo} alt="Snail with an at symbol for a shell. Text reads Happy Mail Postage Calculator" className="logo" />
       </div>
       <div className='content'>
         <div className='dataEntry'>
@@ -181,9 +140,8 @@ function App() {
               endAdornment: <InputAdornment position="end">¢</InputAdornment>,
             }}
             onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-              const newPostageCost = Number.parseInt(event.target.value) || 0;
-              localStorage.setItem('postageCost', newPostageCost.toString());
-              setPostageCost(newPostageCost);
+              localStorage.setItem('postageCost', event.target.value);
+              setPostageCost(event.target.value);
             }}
           />
           <TextField
@@ -192,7 +150,7 @@ function App() {
             value={maxStamps}
             onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
               localStorage.setItem('maxStamps', event.target.value);
-              setMaxStamps(Number.parseInt(event.target.value) || 0);
+              setMaxStamps(event.target.value);
             }}
           />
           <TextField
@@ -217,7 +175,7 @@ function App() {
             onBlur={() => onListBlur('excludedDenominations', excludedDenominations, setExcludedDenominations)}
           />
           <div className='generateSolution'>
-            <Pressable onPress={generateSolutions} aria-label='Create postage solutions'>
+            <Pressable onPress={() => generateSolutions(Number.parseInt(postageCost), Number.parseInt(maxStamps), stampDenominations, desiredDenominations, excludedDenominations, setSolutions, setShowFreshSolutions)} aria-label='Create postage solutions'>
               <Text><div className='whiteTextButton'>Go!</div></Text>
             </Pressable>
           </div>
@@ -227,6 +185,7 @@ function App() {
             </Pressable>
           </div>
         </div>
+
         {displaySolutions()}
         {/* <div className='footer'>
           <div className='footerText footerButton'><Text>Source Code</Text></div>

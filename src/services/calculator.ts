@@ -7,22 +7,24 @@ export const generateSolutions = (
   stampDenominations: string,
   desiredDenominations: string,
   excludedDenominations: string,
-  setSolutions: Function,
-  setShowFreshSolutions: Function,
 ) => {
   const cleanRequiredStamps = spliterate(desiredDenominations);
   const requiredStampsSum = sum(cleanRequiredStamps);
 
   if (postageCost === requiredStampsSum) {
-    setSolutions(sortAndRemoveArrayDuplicates([cleanRequiredStamps], postageCost));
-    return;
+    const sortedShortcutArr = sortAndRemoveArrayDuplicates([cleanRequiredStamps], postageCost);
+    return sortedShortcutArr.map(solution => {
+      return { isSaved: false, stamps: solution };
+    });
   }
 
   const cleanStampDenoms = subtractLists(spliterate(stampDenominations), spliterate(excludedDenominations));
   let rawSolutions: number[][] = scrySolutions([cleanRequiredStamps], postageCost, cleanStampDenoms, maxStamps - cleanRequiredStamps.length);
 
-  setSolutions(sortAndRemoveArrayDuplicates(rawSolutions, postageCost));
-  setShowFreshSolutions(true);
+  const sortedArr = sortAndRemoveArrayDuplicates(rawSolutions, postageCost);
+  return sortedArr.map(solution => {
+    return { isSaved: false, stamps: solution };
+  });
 };
 
 const scrySolutions = (rawSolutions: number[][], maxPostage: number, availableDenominations: number[], stampSlotsRemaining: number): number[][] => {

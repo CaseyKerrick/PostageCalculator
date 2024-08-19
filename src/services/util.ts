@@ -26,3 +26,8 @@ export const removeDuplicateLists = (arr: number[][]) => {
 
   return duplicatesRemoved.map(spliterate);
 };
+
+export type Solution = {
+  isSaved: boolean,
+  stamps: number[],
+};

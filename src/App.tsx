@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { InputAdornment, TextField, List, ListItem } from '@mui/material';
+import { InputAdornment, TextField } from '@mui/material';
 import { Pressable, Text } from 'react-native';
+import SavedSolutions from './components/SavedSolutions';
+import CalculatedSolutions from './components/CalculatedSolutions';
 import fullLogo from './FullLogo_Transparent.png';
 import { generateSolutions } from './services/calculator';
-import { spliterate, sortInts } from './services/util';
+import { spliterate, sortInts, Solution } from './services/util';
 import './App.css';
 
 const DEFAULT_STAMP_DENOMINATIONS = '4, 5, 10, 18, 20, 22, 24, 29, 33, 34, 50, 51, 66, 87, 100, 111';
@@ -11,63 +13,14 @@ const DEFAULT_POSTAGE_COST = '51';
 const DEFAULT_STAMP_MAX = '4';
 const STRING_CONTAINS_LETTER = /[a-zA-Z]/;
 
+const sortSolutions = (arr: Solution[]) => {
+  const noEmpties = arr.filter(item => item.stamps.length > 0);
+  const sortedByStampValues = noEmpties.sort((a: Solution, b: Solution) => a.stamps[0] - b.stamps[0]).reverse();
+  const sortedByLengthArr = sortedByStampValues.sort((a: Solution, b: Solution) => a.stamps.length - b.stamps.length);
+  return sortedByLengthArr;
+};
+
 function App() {
-
-  const displaySolutions = () => {
-    if (showFreshSolutions) {
-      return drawList(solutions);
-    } else if (savedSolutions.length > 0) {
-      return drawList(savedSolutions, false);
-    }
-
-    return 'To save a solution, click on it.';
-  }
-
-  const modifySavedSolutions = (index: number, addMode: boolean = true) => {
-    if (!addMode) {
-      savedSolutions.splice(index, 1);
-      const newSolutions = [...savedSolutions];
-
-      setSavedSolutions(newSolutions);
-      localStorage.setItem('savedSolutions', newSolutions.map(item => item.join(',')).join(';'));
-    } else {
-      const newSolutions = [...savedSolutions, solutions[index]];
-
-      setSavedSolutions(newSolutions);
-      localStorage.setItem('savedSolutions', newSolutions.map(item => item.join(',')).join(';'));
-    }
-  };
-
-  const drawList = (arr: number[][], addMode: boolean = true) => {
-    return (
-      <List className='displayPostageSolution'>
-        { arr.map((sol: number[], index: number) => (
-          <div className='solutionButtonHelper'>
-            <Pressable
-              onPress={(event) => modifySavedSolutions(index, addMode)}
-              aria-label={`Click to ${addMode ? 'add to' : 'remove from'} saved solutions`}
-            >
-              <ListItem key={sol.toString() + index.toString()} className='postageSolution'>
-                {drawStamps(sol, addMode)}
-              </ListItem>
-            </Pressable>
-          </div>
-        ))}
-      </List>
-    );
-  };
-
-  const drawStamps = (stamps: number[], addMode: boolean = true) => {
-    return (
-      <div>
-        { stamps.map((stamp: number, index: number) => (
-          <div key={`container${stamp}${index}`} className="stampContainer">
-            <div key={`${stamp}${index}`} className="stamp">{stamp}</div>
-          </div>
-        ))}
-      </div>
-    );
-  };
 
   const onListBlur = (key: string, listVar: string, setListVar: Function) => {
     const numberList = listVar.split(',').map(item => Number.parseInt(item)).filter(item => !!item);
@@ -78,18 +31,36 @@ function App() {
     }
   };
 
-  const showSavedSolutions = () => {
-    setSolutions([...savedSolutions, '1,2,3']);
-    setShowFreshSolutions(false);
+  const isSolutionSaved = (checkSolution: Array<number>) => {
+    return savedSolutions.filter(item => {
+      if (checkSolution.length !== item.stamps.length) return false;
+
+      for (let x = 0; x < checkSolution.length; x++) {
+        if (checkSolution[x] !== item.stamps[x]) return false;
+      }
+
+      return true;
+    }).length > 0;
   };
+
+  const showWhichSolutions = (fresh: boolean) => () => {
+    if (!fresh) {
+      const filteredSolutions = savedSolutions.filter(item => item.isSaved);
+      const sortedSolutions = sortSolutions(filteredSolutions);
+      localStorage.setItem('savedSolutions', JSON.stringify(sortedSolutions));
+      setSavedSolutions(sortedSolutions);
+    }
+
+    setShowFreshSolutions(fresh);
+  }
 
   const [stampDenominations, setStampDenominations] = useState(DEFAULT_STAMP_DENOMINATIONS);
   const [postageCost, setPostageCost] = useState(DEFAULT_POSTAGE_COST);
   const [maxStamps, setMaxStamps] = useState(DEFAULT_STAMP_MAX);
   const [desiredDenominations, setDesiredDenominations] = useState('');
   const [excludedDenominations, setExcludedDenominations] = useState('');
-  const [solutions, setSolutions] = useState(new Array());
-  const [savedSolutions, setSavedSolutions] = useState(new Array());
+  const [solutions, setSolutions] = useState<Array<any>>([]);
+  const [savedSolutions, setSavedSolutions] = useState<Array<any>>([]);
   const [showFreshSolutions, setShowFreshSolutions] = useState(true);
 
   useEffect(() => {
@@ -120,8 +91,11 @@ function App() {
 
     const storedSavedSolutions = localStorage.getItem('savedSolutions');
     if (storedSavedSolutions) {
-      const cleanSavedSolutions = storedSavedSolutions.split(';').map(item => spliterate(item));
-      setSavedSolutions(cleanSavedSolutions);
+      // const cleanSavedSolutions = storedSavedSolutions.split(';').map(item => {
+      //   return { isSaved: true, stamps: spliterate(item) };
+      // });
+
+      setSavedSolutions(JSON.parse(storedSavedSolutions));
     }
   }, [setPostageCost, setMaxStamps, setStampDenominations, setDesiredDenominations, setExcludedDenominations, setSavedSolutions]);
 
@@ -175,18 +149,37 @@ function App() {
             onBlur={() => onListBlur('excludedDenominations', excludedDenominations, setExcludedDenominations)}
           />
           <div className='generateSolution'>
-            <Pressable onPress={() => generateSolutions(Number.parseInt(postageCost), Number.parseInt(maxStamps), stampDenominations, desiredDenominations, excludedDenominations, setSolutions, setShowFreshSolutions)} aria-label='Create postage solutions'>
+            <Pressable onPress={() => {
+                showWhichSolutions(true);
+                let generatedSolutions = generateSolutions(
+                  Number.parseInt(postageCost),
+                  Number.parseInt(maxStamps),
+                  stampDenominations,
+                  desiredDenominations,
+                  excludedDenominations);
+                let solutionsWithSavedIndicator = generatedSolutions.map(item => {
+                  return {
+                    isSaved: isSolutionSaved(item.stamps),
+                    stamps: item.stamps,
+                  };
+                });
+                setSolutions(solutionsWithSavedIndicator);
+                setShowFreshSolutions(true);
+                }} aria-label='Create postage solutions'>
               <Text><div className='whiteTextButton'>Go!</div></Text>
             </Pressable>
           </div>
           <div className='resetOptions'>
-            <Pressable onPress={showSavedSolutions} aria-label='Reset all options'>
+            <Pressable onPress={showWhichSolutions(false)} aria-label='Reset all options'>
               <Text><div className='whiteTextButton'>Saved Combinations</div></Text>
             </Pressable>
           </div>
         </div>
-
-        {displaySolutions()}
+        { showFreshSolutions
+          ? <CalculatedSolutions calculatedSolutions={solutions} setSolutions={setSolutions} savedSolutions={savedSolutions} setSavedSolutions={setSavedSolutions} />
+          : <SavedSolutions savedSolutions={savedSolutions} setSavedSolutions={setSavedSolutions} />
+        }
+        
         {/* <div className='footer'>
           <div className='footerText footerButton'><Text>Source Code</Text></div>
           <div className='footerText'><Text>Copyright (c) 2023</Text></div>

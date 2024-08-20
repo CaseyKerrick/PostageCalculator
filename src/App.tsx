@@ -44,13 +44,10 @@ function App() {
   };
 
   const showWhichSolutions = (fresh: boolean) => () => {
-    if (!fresh) {
-      const filteredSolutions = savedSolutions.filter(item => item.isSaved);
-      const sortedSolutions = sortSolutions(filteredSolutions);
-      localStorage.setItem('savedSolutions', JSON.stringify(sortedSolutions));
-      setSavedSolutions(sortedSolutions);
-    }
-
+    const filteredSolutions = savedSolutions.filter(item => item.isSaved);
+    const sortedSolutions = sortSolutions(filteredSolutions);
+    localStorage.setItem('savedSolutions', JSON.stringify(sortedSolutions));
+    setSavedSolutions(sortedSolutions);
     setShowFreshSolutions(fresh);
   }
 
@@ -146,27 +143,28 @@ function App() {
           />
           <div className='generateSolution'>
             <Pressable onPress={() => {
-                showWhichSolutions(true);
-                let generatedSolutions = generateSolutions(
-                  Number.parseInt(postageCost),
-                  Number.parseInt(maxStamps),
-                  stampDenominations,
-                  desiredDenominations,
-                  excludedDenominations);
-                let solutionsWithSavedIndicator = generatedSolutions.map(item => {
-                  return {
-                    isSaved: isSolutionSaved(item.stamps),
-                    stamps: item.stamps,
-                  };
-                });
-                setSolutions(solutionsWithSavedIndicator);
-                setShowFreshSolutions(true);
-                }} aria-label='Create postage solutions'>
+              // showWhichSolutions(true);
+              showWhichSolutions(true)();
+              let generatedSolutions = generateSolutions(
+                Number.parseInt(postageCost),
+                Number.parseInt(maxStamps),
+                stampDenominations,
+                desiredDenominations,
+                excludedDenominations);
+              let solutionsWithSavedIndicator = generatedSolutions.map(item => {
+                return {
+                  isSaved: isSolutionSaved(item.stamps),
+                  stamps: item.stamps,
+                };
+              });
+              setSolutions(solutionsWithSavedIndicator);
+              setShowFreshSolutions(true);
+            }} aria-label='Create postage solutions'>
               <Text><div className='whiteTextButton'>Go!</div></Text>
             </Pressable>
           </div>
           <div className='resetOptions'>
-            <Pressable onPress={showWhichSolutions(false)} aria-label='Reset all options'>
+            <Pressable onPress={showWhichSolutions(false)} aria-label='Show saved combinations'>
               <Text><div className='whiteTextButton'>Saved Combinations</div></Text>
             </Pressable>
           </div>

@@ -11,10 +11,28 @@ const toggleSolution = (index: number, arr: Solution[], alreadySaved: boolean, s
     
     return item;
   }));
+  
+  if (!alreadySaved) {
+    const newSavedSolutions = [...savedSolutions, { stamps: arr[index].stamps, isSaved: true }];
+    localStorage.setItem('savedSolutions', JSON.stringify(newSavedSolutions));
+    setSavedSolutions(newSavedSolutions);
+  }
+  else {
+    const checkSolution = arr[index].stamps;
 
-  const newSavedSolutions = [...savedSolutions, { stamps: arr[index].stamps, isSaved: true }];
-  localStorage.setItem('savedSolutions', JSON.stringify(newSavedSolutions));
-  setSavedSolutions(newSavedSolutions);
+    const solutionRemoved = savedSolutions.filter(item => {
+      if (checkSolution.length !== item.stamps.length) return true;
+
+      for (let x = 0; x < checkSolution.length; x++) {
+        if (checkSolution[x] !== item.stamps[x]) return true;
+      }
+
+      return false;
+    });
+
+    localStorage.setItem('savedSolutions', JSON.stringify(solutionRemoved));
+    setSavedSolutions(solutionRemoved);
+  }
 };
 
 function CalculatedSolutions(props: any) {

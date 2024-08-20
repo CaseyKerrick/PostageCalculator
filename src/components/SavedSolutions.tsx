@@ -3,14 +3,9 @@ import { Pressable } from 'react-native';
 import { Solution } from '../services/util';
 
 
-const toggleSolution = (index: number, arr: Solution[], alreadySaved: boolean, setSavedSolutions: Function) => {
-  setSavedSolutions(arr.map((item, i) => {
-    if (i === index) {
-      return { ...item, isSaved: !alreadySaved };
-    }
-    
-    return item;
-  }));
+const removeSolution = (index: number, arr: Solution[], setSavedSolutions: Function) => {
+  let newArr = [...arr.slice(0, index), ...arr.slice(index + 1)];
+  setSavedSolutions(newArr);
 };
 
 function SavedSolutions(props: any) {
@@ -19,7 +14,7 @@ function SavedSolutions(props: any) {
       { props.savedSolutions.map((sol: Solution, index: number) => (
         <div className='solutionButtonHelper'>
           <Pressable
-            onPress={() => toggleSolution(index, props.savedSolutions, sol.isSaved, props.setSavedSolutions)}
+            onPress={() => removeSolution(index, props.savedSolutions, props.setSavedSolutions)}
             aria-label={`Click to ${sol.isSaved ? 'remove from' : 'add to'} saved solutions`}
           >
             <ListItem key={sol.stamps.toString() + index.toString()} className={sol.isSaved ? 'postageSolutionSaved' : 'postageSolutionUnsaved'}>

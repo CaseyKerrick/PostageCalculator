@@ -23,7 +23,7 @@ function CalculatedSolutions(props: any) {
       { props.calculatedSolutions.map((sol: Solution, index: number) => (
         <div className='solutionButtonHelper'>
           <Pressable
-            onPressIn={(event) => toggleSolution(index, props.calculatedSolutions, sol.isSaved, props.setSolutions, props.savedSolutions, props.setSavedSolutions)}
+            onPressOut={(event) => toggleSolution(index, props.calculatedSolutions, sol.isSaved, props.setSolutions, props.savedSolutions, props.setSavedSolutions)}
             aria-label={`Click to ${sol.isSaved ? 'remove from' : 'add to'} saved solutions`}
           >
             <ListItem key={sol.stamps.toString() + index.toString()} className={sol.isSaved ? 'postageSolutionSaved' : 'postageSolutionUnsaved'}>

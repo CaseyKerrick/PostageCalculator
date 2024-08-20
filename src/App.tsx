@@ -5,7 +5,7 @@ import SavedSolutions from './components/SavedSolutions';
 import CalculatedSolutions from './components/CalculatedSolutions';
 import fullLogo from './FullLogo_Transparent.png';
 import { generateSolutions } from './services/calculator';
-import { spliterate, sortInts, Solution } from './services/util';
+import { sortInts, Solution } from './services/util';
 import './App.css';
 
 const DEFAULT_STAMP_DENOMINATIONS = '4, 5, 10, 18, 20, 22, 24, 29, 33, 34, 50, 51, 66, 87, 100, 111';
@@ -59,8 +59,8 @@ function App() {
   const [maxStamps, setMaxStamps] = useState(DEFAULT_STAMP_MAX);
   const [desiredDenominations, setDesiredDenominations] = useState('');
   const [excludedDenominations, setExcludedDenominations] = useState('');
-  const [solutions, setSolutions] = useState<Array<any>>([]);
-  const [savedSolutions, setSavedSolutions] = useState<Array<any>>([]);
+  const [solutions, setSolutions] = useState<Solution[]>([]);
+  const [savedSolutions, setSavedSolutions] = useState<Solution[]>([]);
   const [showFreshSolutions, setShowFreshSolutions] = useState(true);
 
   useEffect(() => {
@@ -91,10 +91,6 @@ function App() {
 
     const storedSavedSolutions = localStorage.getItem('savedSolutions');
     if (storedSavedSolutions) {
-      // const cleanSavedSolutions = storedSavedSolutions.split(';').map(item => {
-      //   return { isSaved: true, stamps: spliterate(item) };
-      // });
-
       setSavedSolutions(JSON.parse(storedSavedSolutions));
     }
   }, [setPostageCost, setMaxStamps, setStampDenominations, setDesiredDenominations, setExcludedDenominations, setSavedSolutions]);

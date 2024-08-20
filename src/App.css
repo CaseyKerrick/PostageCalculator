@@ -109,13 +109,13 @@
   margin-right: auto;
   margin-bottom: 20px;
 
-  &:hover {
+  /* &:hover {
     background-color: rgb(17, 155, 17);
 
     .stampContainerUnsaved {
       background-image: radial-gradient(rgb(17, 155, 17), 50%, transparent 50%);
     }
-  }
+  } */
 }
 
 .postageSolutionSaved {
@@ -126,13 +126,13 @@
   margin-right: auto;
   margin-bottom: 20px;
 
-  &:hover {
+  /* &:hover {
     background-color: rgb(92, 172, 92);
 
     .stampContainerSaved {
       background-image: radial-gradient(rgb(92, 172, 92), 50%, transparent 50%);
     }
-  }
+  } */
 }
 
 .stampContainerUnsaved {

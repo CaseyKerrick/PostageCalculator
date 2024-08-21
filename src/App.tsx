@@ -3,6 +3,7 @@ import { InputAdornment, TextField } from '@mui/material';
 import { Pressable, Text } from 'react-native';
 import SavedSolutions from './components/SavedSolutions';
 import CalculatedSolutions from './components/CalculatedSolutions';
+import Footer from './components/Footer';
 import fullLogo from './FullLogo_Transparent.png';
 import { generateSolutions } from './services/calculator';
 import { sortInts, Solution } from './services/util';
@@ -143,7 +144,6 @@ function App() {
           />
           <div className='generateSolution'>
             <Pressable onPress={() => {
-              // showWhichSolutions(true);
               showWhichSolutions(true)();
               let generatedSolutions = generateSolutions(
                 Number.parseInt(postageCost),
@@ -173,12 +173,7 @@ function App() {
           ? <CalculatedSolutions calculatedSolutions={solutions} setSolutions={setSolutions} savedSolutions={savedSolutions} setSavedSolutions={setSavedSolutions} />
           : <SavedSolutions savedSolutions={savedSolutions} setSavedSolutions={setSavedSolutions} />
         }
-        
-        {/* <div className='footer'>
-          <div className='footerText footerButton'><Text>Source Code</Text></div>
-          <div className='footerText'><Text>Copyright (c) 2023</Text></div>
-          <div className='footerText footerButton'><Text>Donate</Text></div>
-        </div> */}
+        <Footer />
       </div>
     </>
   );

@@ -2,7 +2,7 @@ function Footer() {
   return (
     <div className="footer">
       {/* <div className='footerText'>Copyright (c) 2023</div> */}
-      <div className='footerText'>Like this app? <a href="https://buymeacoffee.com/caseykerrick" target="_blank">Buy me a coffee!</a></div>
+      <div className='footerText'>Like this app? <a href="https://buymeacoffee.com/caseykerrick" target="_blank" rel="noreferrer">Buy me a coffee!</a></div>
     </div>
   );
 }

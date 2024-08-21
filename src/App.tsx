@@ -104,9 +104,7 @@ function App() {
             label='Total Postage Cost'
             className='smallDataEntry'
             value={postageCost}
-            InputProps={{
-              endAdornment: <InputAdornment position="end">¢</InputAdornment>,
-            }}
+            InputProps={{ endAdornment: <InputAdornment position="end">¢</InputAdornment> }}
             onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
               localStorage.setItem('postageCost', event.target.value);
               setPostageCost(event.target.value);

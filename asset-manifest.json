@@ -1,16 +1,16 @@
 {
   "files": {
     "main.css": "/PostageCalculator/static/css/main.f5661ec5.css",
-    "main.js": "/PostageCalculator/static/js/main.9bc5a978.js",
+    "main.js": "/PostageCalculator/static/js/main.993c9bab.js",
     "static/js/787.35c85d53.chunk.js": "/PostageCalculator/static/js/787.35c85d53.chunk.js",
     "static/media/FullLogo_Transparent.png": "/PostageCalculator/static/media/FullLogo_Transparent.87abe4c197a35658b24e.png",
     "index.html": "/PostageCalculator/index.html",
     "main.f5661ec5.css.map": "/PostageCalculator/static/css/main.f5661ec5.css.map",
-    "main.9bc5a978.js.map": "/PostageCalculator/static/js/main.9bc5a978.js.map",
+    "main.993c9bab.js.map": "/PostageCalculator/static/js/main.993c9bab.js.map",
     "787.35c85d53.chunk.js.map": "/PostageCalculator/static/js/787.35c85d53.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.f5661ec5.css",
-    "static/js/main.9bc5a978.js"
+    "static/js/main.993c9bab.js"
   ]
 }

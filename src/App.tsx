@@ -100,25 +100,27 @@ function App() {
       </div>
       <div className='content'>
         <div className='dataEntry'>
-          <TextField
-            label='Total Postage Cost'
-            className='smallDataEntry'
-            value={postageCost}
-            InputProps={{ endAdornment: <InputAdornment position="end">¢</InputAdornment> }}
-            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-              localStorage.setItem('postageCost', event.target.value);
-              setPostageCost(event.target.value);
-            }}
-          />
-          <TextField
-            label='Max Stamps Allowed'
-            className='smallDataEntry'
-            value={maxStamps}
-            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-              localStorage.setItem('maxStamps', event.target.value);
-              setMaxStamps(event.target.value);
-            }}
-          />
+          <div className='shrinkRow'>
+            <TextField
+              label='Total Postage Cost'
+              className='smallDataEntry'
+              value={postageCost}
+              InputProps={{ endAdornment: <InputAdornment position="end">¢</InputAdornment> }}
+              onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                localStorage.setItem('postageCost', event.target.value);
+                setPostageCost(event.target.value);
+              }}
+            />
+            <TextField
+              label='Max Stamps Allowed'
+              className='smallDataEntry'
+              value={maxStamps}
+              onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                localStorage.setItem('maxStamps', event.target.value);
+                setMaxStamps(event.target.value);
+              }}
+            />
+          </div>
           <TextField
             label="Postage Denominations Available"
             className='largeDataEntry'
@@ -140,31 +142,33 @@ function App() {
             onChange={(event: React.ChangeEvent<HTMLInputElement>) => setExcludedDenominations(event.target.value)}
             onBlur={() => onListBlur('excludedDenominations', excludedDenominations, setExcludedDenominations)}
           />
-          <div className='generateSolution'>
-            <Pressable onPress={() => {
-              showWhichSolutions(true)();
-              let generatedSolutions = generateSolutions(
-                Number.parseInt(postageCost),
-                Number.parseInt(maxStamps),
-                stampDenominations,
-                desiredDenominations,
-                excludedDenominations);
-              let solutionsWithSavedIndicator = generatedSolutions.map(item => {
-                return {
-                  isSaved: isSolutionSaved(item.stamps),
-                  stamps: item.stamps,
-                };
-              });
-              setSolutions(solutionsWithSavedIndicator);
-              setShowFreshSolutions(true);
-            }} aria-label='Create postage solutions'>
-              <Text><div className='whiteTextButton'>Go!</div></Text>
-            </Pressable>
-          </div>
-          <div className='resetOptions'>
-            <Pressable onPress={showWhichSolutions(false)} aria-label='Show saved combinations'>
-              <Text><div className='whiteTextButton'>Saved Combinations</div></Text>
-            </Pressable>
+          <div className='shrinkRow'>
+            <div className='generateSolution'>
+              <Pressable onPress={() => {
+                showWhichSolutions(true)();
+                let generatedSolutions = generateSolutions(
+                  Number.parseInt(postageCost),
+                  Number.parseInt(maxStamps),
+                  stampDenominations,
+                  desiredDenominations,
+                  excludedDenominations);
+                let solutionsWithSavedIndicator = generatedSolutions.map(item => {
+                  return {
+                    isSaved: isSolutionSaved(item.stamps),
+                    stamps: item.stamps,
+                  };
+                });
+                setSolutions(solutionsWithSavedIndicator);
+                setShowFreshSolutions(true);
+              }} aria-label='Create postage solutions'>
+                <Text><div className='whiteTextButton'>Go!</div></Text>
+              </Pressable>
+            </div>
+            <div className='savedSolutionsButton'>
+              <Pressable onPress={showWhichSolutions(false)} aria-label='Show saved combinations'>
+                <Text><div className='whiteTextButton'>Saved Combinations</div></Text>
+              </Pressable>
+            </div>
           </div>
         </div>
         { showFreshSolutions

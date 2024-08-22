@@ -3,7 +3,7 @@
   margin-left: auto;
   margin-right: auto;
   width: 85%;
-  max-width: 750px;
+  max-width: 700px;
 }
 
 .content {
@@ -39,6 +39,11 @@
   margin: 10px;
 }
 
+.shrinkRow {
+  display: flex;
+  justify-content: space-between;
+}
+
 .stampValues {
   margin-top: 20px;
 }
@@ -57,7 +62,7 @@
   }
 }
 
-.resetOptions {
+.savedSolutionsButton {
   width: calc(100% - 20px);
   max-width: 300px;
   margin: 10px;

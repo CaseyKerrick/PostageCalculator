@@ -166,7 +166,7 @@ function App() {
             </div>
             <div className='savedSolutionsButton'>
               <Pressable onPress={showWhichSolutions(false)} aria-label='Show saved combinations'>
-                <Text><div className='whiteTextButton'>Saved Sets</div></Text>
+                <Text><div className='whiteTextButton'>Favorites</div></Text>
               </Pressable>
             </div>
           </div>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { InputAdornment, TextField } from '@mui/material';
+import { TextField } from '@mui/material';
 import { Pressable, Text } from 'react-native';
 import SavedSolutions from './components/SavedSolutions';
 import CalculatedSolutions from './components/CalculatedSolutions';
@@ -9,8 +9,8 @@ import { generateSolutions } from './services/calculator';
 import { sortInts, Solution } from './services/util';
 import './App.css';
 
-const DEFAULT_STAMP_DENOMINATIONS = '4, 5, 10, 18, 20, 22, 24, 29, 33, 34, 50, 51, 66, 87, 100, 111';
-const DEFAULT_POSTAGE_COST = '51';
+const DEFAULT_STAMP_DENOMINATIONS = '4, 5, 10, 18, 20, 22, 24, 29, 33, 34, 50, 56';
+const DEFAULT_POSTAGE_COST = '56';
 const DEFAULT_STAMP_MAX = '4';
 const STRING_CONTAINS_LETTER = /[a-zA-Z]/;
 
@@ -24,7 +24,7 @@ const sortSolutions = (arr: Solution[]) => {
 function App() {
 
   const onListBlur = (key: string, listVar: string, setListVar: Function) => {
-    const numberList = listVar.split(',').map(item => Number.parseInt(item)).filter(item => !!item);
+    const numberList = listVar.split(',').map(item => Number(item)).filter(item => !!item);
     const strSortedList = numberList.sort(sortInts).join(', ');
     if (!STRING_CONTAINS_LETTER.test(strSortedList)) {
       setListVar(strSortedList);
@@ -105,14 +105,13 @@ function App() {
               label='Total Postage Cost'
               className='smallDataEntry'
               value={postageCost}
-              InputProps={{ endAdornment: <InputAdornment position="end">¢</InputAdornment> }}
               onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                 localStorage.setItem('postageCost', event.target.value);
                 setPostageCost(event.target.value);
               }}
             />
             <TextField
-              label='Max Stamps Allowed'
+              label='Max # of Stamps'
               className='smallDataEntry'
               value={maxStamps}
               onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
@@ -147,8 +146,8 @@ function App() {
               <Pressable onPress={() => {
                 showWhichSolutions(true)();
                 let generatedSolutions = generateSolutions(
-                  Number.parseInt(postageCost),
-                  Number.parseInt(maxStamps),
+                  Number(postageCost),
+                  Number(maxStamps),
                   stampDenominations,
                   desiredDenominations,
                   excludedDenominations);

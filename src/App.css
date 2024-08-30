@@ -124,6 +124,7 @@
   margin-left: auto;
   margin-right: auto;
   margin-bottom: 20px;
+  display: block;
 
   /* &:hover {
     background-color: rgb(17, 155, 17);
@@ -141,6 +142,7 @@
   margin-left: auto;
   margin-right: auto;
   margin-bottom: 20px;
+  display: block;
 
   /* &:hover {
     background-color: rgb(92, 172, 92);

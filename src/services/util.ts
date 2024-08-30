@@ -1,5 +1,5 @@
 export const spliterate = (rawArr: string): number[] => {
-  return rawArr.split(',').map((item: string) => Number.parseInt(item)).filter(item => !!item);
+  return rawArr.split(',').map((item: string) => Number(item)).filter(item => !!item);
 };
 
 export const subtractLists = (listA: number[], listB: number[]): number[] => {

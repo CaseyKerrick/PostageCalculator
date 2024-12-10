@@ -1,6 +1,6 @@
 import { List, ListItem } from '@mui/material';
 import { Pressable } from 'react-native';
-import { Solution } from '../services/util';
+import { Solution, sum } from '../services/util';
 
 
 const removeSolution = (index: number, arr: Solution[], setSavedSolutions: Function) => {
@@ -23,6 +23,7 @@ function SavedSolutions(props: any) {
                   <div key={`${stamp}${index}`} className="stamp">{stamp}</div>
                 </div>
               ))}
+              <div className="stampTotal">Total: {sum(sol.stamps)}</div>
             </ListItem>
           </Pressable>
         </div>
